@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Dict
-import Html exposing (Attribute, Html, a, button, div, h1, hr, img, input, p, pre, text)
+import Html exposing (Attribute, Html, a, button, div, h1, hr, img, input, p, pre, span, text)
 import Html.Attributes exposing (selected, src, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Platform.Cmd exposing (Cmd)
@@ -21,7 +21,7 @@ main =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { result = 1, count = 3, dice = [ 1 ] }
+    ( { result = 1, count = 3, faces = 6, dice = [ 1 ] }
     , Cmd.none
     )
 
@@ -30,7 +30,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Roll ->
-            ( model, Random.generate NewDie (Random.list model.count (Random.int 1 6)) )
+            ( model, Random.generate NewDie (Random.list model.count (Random.int 1 model.faces)) )
 
         NewDie x ->
             ( { model | result = List.foldl (+) 0 x, dice = x }, Cmd.none )
@@ -38,15 +38,19 @@ update msg model =
         ChangeCount s ->
             ( { model | count = Maybe.withDefault 1 (String.toInt s) }, Cmd.none )
 
+        ChangeFaces s ->
+            ( { model | faces = Maybe.withDefault 1 (String.toInt s) }, Cmd.none )
+
 
 type alias Model =
-    { result : Int, count : Int, dice : List Int }
+    { result : Int, count : Int, dice : List Int, faces : Int }
 
 
 type Msg
     = Roll
     | NewDie (List Int)
     | ChangeCount String
+    | ChangeFaces String
 
 
 
@@ -73,7 +77,15 @@ view model =
                 , type_ "number"
                 ]
                 []
+            , span [] [ text " Dice " ]
+            , input
+                [ onInput ChangeFaces
+                , value (String.fromInt model.faces)
+                , type_ "number"
+                ]
+                []
             ]
+        , p [] [ text (String.fromInt model.count ++ "d" ++ String.fromInt model.faces) ]
         , p [] [ text (String.fromInt model.result) ]
         , p [] [ text (String.join "+" (List.map String.fromInt model.dice)) ]
         ]
