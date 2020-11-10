@@ -1,13 +1,3 @@
-# elm-learning
-
-## Creating a new project
-
-- `npm init`
-- `npm install elm`
-- add `"elm": "elm"` to scripts in `package.json`
-- `npm run elm init`
-- create a `src/Main.elm` ie:
-```elm
 module Main exposing (main)
 
 import Browser
@@ -66,4 +56,3 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div [] []
-```
