@@ -9,7 +9,6 @@ import Platform.Cmd exposing (Cmd)
 import Random
 
 
-
 main : Program () Model Msg
 main =
     Browser.element
@@ -22,7 +21,7 @@ main =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { die=1 }
+    ( { die = 1 }
     , Random.generate NewDie (Random.int 1 6)
     )
 
@@ -32,11 +31,13 @@ update msg model =
     case msg of
         Roll ->
             ( model, Random.generate NewDie (Random.int 1 6) )
-        NewDie x -> ( {model|die=x}, Cmd.none)
+
+        NewDie x ->
+            ( { model | die = x }, Cmd.none )
 
 
 type alias Model =
-    {die:Int}
+    { die : Int }
 
 
 type Msg
@@ -44,8 +45,8 @@ type Msg
     | NewDie Int
 
 
--- SUBSCRIPTIONS
 
+-- SUBSCRIPTIONS
 
 
 subscriptions : Model -> Sub Msg
@@ -59,4 +60,9 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [] [text (String.fromInt model.die)]
+    div []
+        [ div [] [
+            button [onClick Roll] [text "Roll"]
+        ]
+        , p [] [ text (String.fromInt model.die) ]
+        ]
